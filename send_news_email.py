@@ -64,9 +64,9 @@ def send_email(news):
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
             }}  
             .header {{  
-                background-color: #FF0000; /* Merah */  
+                background: linear-gradient(135deg, #FF0000 50%, #000000 50%);  
                 color: #ffffff;  
-                padding: 10px 0;  
+                padding: 20px;  
                 text-align: center;  
                 border-top-left-radius: 8px;  
                 border-top-right-radius: 8px;  
@@ -106,7 +106,7 @@ def send_email(news):
                 margin: 10px 0;  
             }}  
             .footer {{  
-                background-color: #000000; /* Hitam */  
+                background: linear-gradient(135deg, #000000 50%, #FF0000 50%);  
                 color: #ffffff;  
                 padding: 10px 0;  
                 text-align: center;  
