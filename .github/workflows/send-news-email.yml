@@ -18,15 +18,15 @@ jobs:
       - name: Ambil berita terkini
         id: fetch_news
         run: |
-          response=$(curl -s "https://api.currentsapi.services/v1/latest-news" -G -d language=en -d apiKey=${{ secrets.CURRENTSAPI_KEY }})  
+          response=$(curl -s "https://api.currentsapi.services/v1/latest-news" -G -d language=en -d apiKey=${{ secrets.CURRENTSAPI_KEY }})    
           echo "news_response=$response" >> $GITHUB_ENV
 
       - name: Parsing berita dan menyiapkan isi email
         id: prepare_email
         run: |
-          news=$(echo ${{ env.news_response }} | jq -r '.news[] | "- $$.title) ($$.url))"')  
-          echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV  
-          echo "Email Body: $email_body"  # Debugging step
+          news=$(echo ${{ env.news_response }} | jq -r '.news[] | "- $$.title) ($$.url))"')    
+          echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV    
+          echo "Email Body: ${{ env.email_body }}"  # Debugging step
 
       - name: Kirim email dengan berita
         uses: dawidd6/action-send-mail@v4
@@ -38,6 +38,6 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: Update Berita Harian
           to: aessaputra@yahoo.com
-          from: breaking-news@example.com
+          from: ${{ secrets.MAIL_USERNAME }}
           body: ${{ env.email_body }}
-          convert_markdown: true
+          convert_markdown: false
