@@ -15,9 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Ambil berita terkini
         id: fetch_news
         run: |
@@ -41,6 +38,6 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: Update Berita Harian
           to: aessaputra@yahoo.com
-          from: contact.aessaputra@gmail.com
+          from: breaking-news@example.com
           body: ${{ env.email_body }}
           convert_markdown: true
