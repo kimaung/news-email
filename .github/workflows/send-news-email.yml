@@ -3,6 +3,9 @@ name: Kirim Email Berita Harian
 on:
   schedule:
     - cron: '0 7 * * *' # Jadwalkan untuk berjalan setiap hari pukul 7 AM UTC (14:00 WIB)
+  push:
+    branches:
+      - main
 
 jobs:
   fetch-and-send-news:
