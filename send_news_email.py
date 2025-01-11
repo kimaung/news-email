@@ -64,7 +64,7 @@ def send_email(news):
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
             }}  
             .header {{  
-                background: linear-gradient(135deg, #FF0000 50%, #000000 50%);  
+                background-color: #FF5733; /* Warna Header */  
                 color: #ffffff;  
                 padding: 20px;  
                 text-align: center;  
@@ -106,7 +106,7 @@ def send_email(news):
                 margin: 10px 0;  
             }}  
             .footer {{  
-                background: linear-gradient(135deg, #000000 50%, #FF0000 50%);  
+                background-color: #FF5733; /* Warna Footer */  
                 color: #ffffff;  
                 padding: 10px 0;  
                 text-align: center;  
