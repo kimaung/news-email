@@ -99,6 +99,12 @@ def send_email(news):
                 color: #007BFF;  
                 text-decoration: none;  
             }}  
+            .article img {{  
+                max-width: 100%;  
+                height: auto;  
+                border-radius: 5px;  
+                margin: 10px 0;  
+            }}  
             .footer {{  
                 background-color: #007BFF;  
                 color: #ffffff;  
@@ -131,9 +137,11 @@ def send_email(news):
   
     articles_html = ""  
     for article in news:  
+        image_html = f'<img src="{article["image"]}" alt="{article["title"]}">' if article["image"] else ''  
         articles_html += f"""  
         <div class="article">  
             <h2>{article['title']}</h2>  
+            {image_html}  
             <p>{article['description']}</p>  
             <p><a href="{article['url']}">Read more</a></p>  
         </div>  
