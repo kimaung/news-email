@@ -64,7 +64,7 @@ def send_email(news):
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
             }}  
             .header {{  
-                background-color: #007BFF;  
+                background-color: #FF0000; /* Merah */  
                 color: #ffffff;  
                 padding: 10px 0;  
                 text-align: center;  
@@ -106,7 +106,7 @@ def send_email(news):
                 margin: 10px 0;  
             }}  
             .footer {{  
-                background-color: #007BFF;  
+                background-color: #000000; /* Hitam */  
                 color: #ffffff;  
                 padding: 10px 0;  
                 text-align: center;  
@@ -150,7 +150,7 @@ def send_email(news):
     html_content = html_template.format(articles=articles_html)  
   
     msg = MIMEMultipart()  
-    msg['From'] = EMAIL_ADDRESS  
+    msg['From'] = f"Daily News Update <{EMAIL_ADDRESS}>"  
     msg['To'] = RECIPIENT_EMAIL  
     msg['Subject'] = "Daily News Update"  
   
