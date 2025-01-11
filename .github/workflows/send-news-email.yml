@@ -19,10 +19,22 @@ jobs:
         id: fetch_news
         run: |
           response=$(curl -s "https://api.currentsapi.services/v1/latest-news" -G -d language=en -d apiKey=${{ secrets.CURRENTSAPI_KEY }})    
-          echo "news_response=$response" >> $GITHUB_ENV
+          echo "news_response=$response" >> $GITHUB_ENV  
+          echo "API Response: $response"  # Debugging step
+
+      - name: Periksa apakah respons adalah JSON valid
+        id: check_json
+        run: |
+          if echo ${{ env.news_response }} | jq empty 2>/dev/null; then  
+            echo "JSON is valid"  
+          else  
+            echo "JSON is invalid"  
+            exit 1  
+          fi
 
       - name: Parsing berita dan menyiapkan isi email
         id: prepare_email
+        if: steps.check_json.outputs.result == 'JSON is valid'
         run: |
           news=$(echo ${{ env.news_response }} | jq -r '.news[] | "- $$.title) ($$.url))"')    
           echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV    
@@ -30,6 +42,7 @@ jobs:
 
       - name: Kirim email dengan berita
         uses: dawidd6/action-send-mail@v4
+        if: steps.check_json.outputs.result == 'JSON is valid'
         with:
           server_address: smtp.gmail.com
           server_port: 465
@@ -38,6 +51,6 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: Update Berita Harian
           to: aessaputra@yahoo.com
-          from: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }} # Gunakan alamat email yang sama dengan MAIL_USERNAME
           body: ${{ env.email_body }}
-          convert_markdown: false
+          convert_markdown: false # Matikan jika isi email tidak dalam format Markdown
