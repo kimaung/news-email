@@ -1,0 +1,42 @@
+name: Kirim Email Berita Harian
+
+on:
+  schedule:
+    - cron: '0 7 * * *' # Jadwalkan untuk berjalan setiap hari pukul 7 AM UTC (14:00 WIB)
+
+jobs:
+  fetch-and-send-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Ambil berita terkini
+        id: fetch_news
+        run: |
+          response=$(curl -s "https://api.currentsapi.services/v1/latest-news" -G -d language=en -d apiKey=${{ secrets.CURRENTSAPI_KEY }})  
+          echo "news_response=$response" >> $GITHUB_ENV
+
+      - name: Parsing berita dan menyiapkan isi email
+        id: prepare_email
+        run: |
+          news=$(echo ${{ env.news_response }} | jq -r '.news[] | "- $$.title) ($$.url))"')  
+          echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV
+
+      - name: Kirim email dengan berita
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: Update Berita Harian
+          to: aessaputra@yahoo.com
+          from: Breaking News
+          body: ${{ env.email_body }}
+          convert_markdown: true
