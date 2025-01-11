@@ -43,17 +43,110 @@ def send_email(news):
         logging.info("No news to send.")  
         return  
   
+    # HTML Template  
+    html_template = """  
+    <!DOCTYPE html>  
+    <html>  
+    <head>  
+        <style>  
+            body {{  
+                font-family: Arial, sans-serif;  
+                background-color: #f4f4f4;  
+                margin: 0;  
+                padding: 0;  
+            }}  
+            .container {{  
+                width: 600px;  
+                margin: 0 auto;  
+                background-color: #ffffff;  
+                padding: 20px;  
+                border-radius: 8px;  
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
+            }}  
+            .header {{  
+                background-color: #007BFF;  
+                color: #ffffff;  
+                padding: 10px 0;  
+                text-align: center;  
+                border-top-left-radius: 8px;  
+                border-top-right-radius: 8px;  
+            }}  
+            .header h1 {{  
+                margin: 0;  
+                font-size: 24px;  
+            }}  
+            .content {{  
+                padding: 20px 0;  
+            }}  
+            .article {{  
+                margin-bottom: 20px;  
+                border-bottom: 1px solid #ddd;  
+                padding-bottom: 10px;  
+            }}  
+            .article:last-child {{  
+                border-bottom: none;  
+            }}  
+            .article h2 {{  
+                margin: 0 0 10px 0;  
+                font-size: 18px;  
+                color: #333333;  
+            }}  
+            .article p {{  
+                margin: 0 0 10px 0;  
+                color: #666666;  
+            }}  
+            .article a {{  
+                color: #007BFF;  
+                text-decoration: none;  
+            }}  
+            .footer {{  
+                background-color: #007BFF;  
+                color: #ffffff;  
+                padding: 10px 0;  
+                text-align: center;  
+                border-bottom-left-radius: 8px;  
+                border-bottom-right-radius: 8px;  
+            }}  
+            .footer p {{  
+                margin: 0;  
+                font-size: 12px;  
+            }}  
+        </style>  
+    </head>  
+    <body>  
+        <div class="container">  
+            <div class="header">  
+                <h1>Daily News Update</h1>  
+            </div>  
+            <div class="content">  
+                {articles}  
+            </div>  
+            <div class="footer">  
+                <p>&copy; 2025 Daily News Update</p>  
+            </div>  
+        </div>  
+    </body>  
+    </html>  
+    """  
+  
+    articles_html = ""  
+    for article in news:  
+        articles_html += f"""  
+        <div class="article">  
+            <h2>{article['title']}</h2>  
+            <p>{article['description']}</p>  
+            <p><a href="{article['url']}">Read more</a></p>  
+        </div>  
+        """  
+  
+    html_content = html_template.format(articles=articles_html)  
+  
     msg = MIMEMultipart()  
     msg['From'] = EMAIL_ADDRESS  
     msg['To'] = RECIPIENT_EMAIL  
     msg['Subject'] = "Daily News Update"  
   
-    body = "<h1>Daily News Update</h1><ul>"  
-    for article in news:  
-        body += f"<li><strong>{article['title']}</strong><br>{article['description']}<br><a href='{article['url']}'>Read more</a></li>"  
-    body += "</ul>"  
-  
-    msg.attach(MIMEText(body, 'html'))  
+    msg.attach(MIMEText(html_content, 'html'))  
   
     try:  
         with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:  
