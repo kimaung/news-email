@@ -25,7 +25,8 @@ jobs:
         id: prepare_email
         run: |
           news=$(echo ${{ env.news_response }} | jq -r '.news[] | "- $$.title) ($$.url))"')  
-          echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV
+          echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV  
+          echo "Email Body: $email_body"  # Debugging step
 
       - name: Kirim email dengan berita
         uses: dawidd6/action-send-mail@v4
@@ -37,6 +38,6 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: Update Berita Harian
           to: aessaputra@yahoo.com
-          from: Breaking News
+          from: contact.aessaputra@gmail.com
           body: ${{ env.email_body }}
           convert_markdown: true
