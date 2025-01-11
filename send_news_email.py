@@ -18,11 +18,7 @@ SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 465    
 EMAIL_ADDRESS = os.getenv('MAIL_USERNAME')    
 EMAIL_PASSWORD = os.getenv('MAIL_PASSWORD')    
-RECIPIENT_EMAIL = os.getenv('RECIPIENT_EMAIL')  
-  
-# Logging untuk memeriksa nilai variabel lingkungan  
-logging.info(f"EMAIL_ADDRESS: {EMAIL_ADDRESS}")  
-logging.info(f"RECIPIENT_EMAIL: {RECIPIENT_EMAIL}")  
+RECIPIENT_EMAIL = "aessaputra@yahoo.com"  # Ganti dengan alamat email penerima langsung  
   
 def fetch_news():    
     params = {    
