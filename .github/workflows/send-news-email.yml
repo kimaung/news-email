@@ -53,6 +53,7 @@ jobs:
         if: steps.check_json.outputs.result == 'JSON is valid'
         run: |
           news=$(echo ${{ env.news_response }} | jq -r '.news[] | "- $$.title) ($$.url))"')  
+          echo "Parsed News: $news"  # Debugging step  
           echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV  
           echo "Email Body: ${{ env.email_body }}"  # Debugging step
 
