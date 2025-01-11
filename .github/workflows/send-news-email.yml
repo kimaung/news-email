@@ -48,18 +48,25 @@ jobs:
             exit 1  
           fi
 
-      - name: Parsing berita dan menyiapkan isi email
-        id: prepare_email
+      - name: Parsing berita
+        id: parse_news
         if: steps.check_json.outputs.result == 'JSON is valid'
         run: |
           news=$(echo "${{ env.news_response }}" | jq -r '.news[] | "- $$.title) ($$.url))"')  
           echo "Parsed News: $news"  # Debugging step  
+          echo "news=$news" >> $GITHUB_ENV
+
+      - name: Menyiapkan isi email
+        id: prepare_email
+        if: steps.parse_news.outcome == 'success'
+        run: |
+          news=$(echo "${{ env.news }}")  
           echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV  
           echo "Email Body: ${{ env.email_body }}"  # Debugging step
 
       - name: Kirim email dengan berita
         uses: dawidd6/action-send-mail@v4
-        if: steps.check_json.outputs.result == 'JSON is valid'
+        if: steps.prepare_email.outcome == 'success'
         with:
           server_address: smtp.gmail.com
           server_port: 465
