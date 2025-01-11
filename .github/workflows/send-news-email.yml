@@ -18,55 +18,36 @@ jobs:
       - name: Ambil berita terkini
         id: fetch_news
         run: |
-          response=$(curl -s -w "\n%{http_code}" "https://api.currentsapi.services/v1/latest-news" -G -d language=en -d apiKey=${{ secrets.CURRENTSAPI_KEY }})  
-          echo "API Response: $response"  # Debugging step  
-          http_code=$(echo "$response" | tail -n 1)  
-          echo "HTTP Code: $http_code"  # Debugging step  
-          echo "news_response=$(echo "$response" | head -n -1)" >> $GITHUB_ENV
-
-      - name: Periksa status kode HTTP
-        id: check_http_code
-        run: |
-          if [ "$http_code" -eq 200 ]; then  
-            echo "Status: Success"  
-          else  
-            echo "Status: Failed"  
-            echo "HTTP Code: $http_code"  
-            echo "Response: ${{ env.news_response }}"  
-            exit 1  
-          fi
+          response=$(curl -s "https://api.currentsapi.services/v1/latest-news" -G -d language=en -d apiKey=${{ secrets.CURRENTSAPI_KEY }})    
+          echo "news_response=$response" >> $GITHUB_ENV
 
       - name: Periksa apakah respons adalah JSON valid
         id: check_json
-        if: steps.check_http_code.outputs.Status == 'Success'
         run: |
-          if echo "${{ env.news_response }}" | jq empty 2>/dev/null; then  
-            echo "JSON is valid"  
-          else  
-            echo "JSON is invalid"  
-            echo "Response: ${{ env.news_response }}"  
-            exit 1  
+          if echo "${{ env.news_response }}" | jq empty 2>/dev/null; then    
+            echo "JSON is valid"    
+          else    
+            echo "JSON is invalid"    
+            echo "Response: ${{ env.news_response }}"    
+            exit 1    
           fi
 
       - name: Parsing berita
         id: parse_news
-        if: steps.check_json.outputs.result == 'JSON is valid'
         run: |
-          news=$(echo "${{ env.news_response }}" | jq -r '.news[] | "- $$.title) ($$.url))"')  
-          echo "Parsed News: $news"  # Debugging step  
+          news=$(echo "${{ env.news_response }}" | jq -r '.news[] | "- $$.title) ($$.url))"')    
+          echo "Parsed News: $news"  # Debugging step    
           echo "news=$news" >> $GITHUB_ENV
 
       - name: Menyiapkan isi email
         id: prepare_email
-        if: steps.parse_news.outcome == 'success'
         run: |
-          news=$(echo "${{ env.news }}")  
-          echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV  
+          news=$(echo "${{ env.news }}")    
+          echo "email_body=Berikut adalah berita terkini:\n\n$news" >> $GITHUB_ENV    
           echo "Email Body: ${{ env.email_body }}"  # Debugging step
 
       - name: Kirim email dengan berita
         uses: dawidd6/action-send-mail@v4
-        if: steps.prepare_email.outcome == 'success'
         with:
           server_address: smtp.gmail.com
           server_port: 465
