@@ -14,8 +14,8 @@ API_KEY = os.getenv('CURRENTSAPI_KEY')
 LANGUAGE = "en"  
   
 # Email Details  
-SMTP_SERVER = "smtp.mail.yahoo.com"  
-SMTP_PORT = 587  
+SMTP_SERVER = "smtp.gmail.com"  
+SMTP_PORT = 465  
 EMAIL_ADDRESS = os.getenv('MAIL_USERNAME')  
 EMAIL_PASSWORD = os.getenv('MAIL_PASSWORD')  
 RECIPIENT_EMAIL = "aessaputra@yahoo.com"  
@@ -56,8 +56,7 @@ def send_email(news):
     msg.attach(MIMEText(body, 'html'))  
   
     try:  
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:  
-            server.starttls()  
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:  
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)  
             server.sendmail(EMAIL_ADDRESS, RECIPIENT_EMAIL, msg.as_string())  
         logging.info("Email sent successfully.")  
